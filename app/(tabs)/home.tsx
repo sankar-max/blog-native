@@ -1,10 +1,26 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { usePosts } from '@/features/posts/hooks/usePosts';
+import { PostList } from '@/features/posts/components/PostList';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
+  const { data, isLoading, error, refetch, isRefetching } = usePosts({
+    search: '',
+    page: 1,
+    limit: 10,
+  });
+
   return (
-    <View className="flex-1 items-center justify-center bg-gray-50">
-      <Text className="text-3xl font-bold text-blue-600">Welcome to Blog Mobile</Text>
-      <Text className="mt-4 text-lg text-gray-600">Posts will appear here soon...</Text>
+    <View className="flex-1 bg-gray-50 dark:bg-black">
+      <SafeAreaView edges={['top']} className="flex-1">
+        <PostList
+          posts={data?.posts}
+          isLoading={isLoading}
+          error={error}
+          onRefresh={refetch}
+          isRefetching={isRefetching}
+        />
+      </SafeAreaView>
     </View>
   );
 }

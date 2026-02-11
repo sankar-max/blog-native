@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { authClient, useSession } from '@/lib/auth-client';
 import { Link, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { Github } from 'lucide-react-native';
 
 export default function SignIn() {
@@ -41,9 +40,7 @@ export default function SignIn() {
         }
       );
       console.log('👍🏻11', res);
-      if (res?.data?.token) {
-        await SecureStore.setItemAsync('auth_token', res?.data?.token!);
-      }
+      // better-auth client handles token storage automatically
     } catch (e) {
       console.error(e);
     } finally {
@@ -59,7 +56,7 @@ export default function SignIn() {
   const handleGithubLogin = async () => {
     setLoading(true);
     try {
-      const res = await authClient.signIn.social({
+      await authClient.signIn.social({
         provider: 'github',
         callbackURL: '/dashboard',
       });
