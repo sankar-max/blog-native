@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-const API_BASE = __DEV__ ? 'http://192.168.1.12:3000' : 'https://your-vercel-app.com';
+const API_BASE = process.env.EXPO_PUBLIC_API_URL || (__DEV__ ? 'http://192.168.1.12:3000' : '');
 
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE,

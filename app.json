@@ -3,38 +3,41 @@
     "name": "blog-mobile",
     "slug": "blog-mobile",
     "version": "1.0.0",
-
     "web": {
       "favicon": "./assets/favicon.png"
     },
-
     "experiments": {
       "tsconfigPaths": true
     },
-
-  "scheme": "blog-mobile",
+    "scheme": "blog-mobile",
     "plugins": [
       "expo-router"
     ],
-
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-
     "userInterfaceStyle": "light",
-
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.chan.blogmobile",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1c743570-e468-411f-9c6c-a768ecfea4bd"
       }
     }
   }
