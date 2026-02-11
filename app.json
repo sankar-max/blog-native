@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "blog-native",
-    "slug": "blog-native",
+    "name": "blog-mobile",
+    "slug": "blog-mobile",
     "version": "1.0.0",
 
     "web": {
@@ -12,7 +12,10 @@
       "tsconfigPaths": true
     },
 
-    "plugins": [],
+  "scheme": "blog-mobile",
+    "plugins": [
+      "expo-router"
+    ],
 
     "orientation": "portrait",
     "icon": "./assets/icon.png",
