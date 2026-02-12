@@ -10,6 +10,7 @@ export default function RootLayout() {
           headerStyle: { backgroundColor: '#3b82f6' },
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
+          headerShown: false,
         }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)/login" options={{ title: 'Sign In' }} />
