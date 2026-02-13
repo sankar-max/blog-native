@@ -1,3 +1,4 @@
+// app/login.tsx (or wherever your SignIn component lives)
 import { useEffect } from 'react';
 import { Alert } from 'react-native';
 import { authClient, useSession } from '@/lib/auth-client';
@@ -7,18 +8,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { loginSchema } from '@/components/auth/validation';
+import api from '@/lib/axios-instance';
+import * as SecureStore from 'expo-secure-store';
 
 type FormData = z.infer<typeof loginSchema>;
 
 export default function SignIn() {
-  const { data: session } = useSession();
+  const { data: session, isPending: sessionLoading } = useSession();
   const router = useRouter();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
@@ -26,45 +25,65 @@ export default function SignIn() {
     },
   });
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = form;
+
   const handleLogin = async (data: FormData) => {
-    console.log('data', data);
-    const { email, password } = data;
+    console.log('Login attempt with:', data);
+
     try {
-      await authClient.signIn.email(
+      const response = await authClient.signIn.email(
         {
-          email,
-          password,
+          email: data.email,
+          password: data.password,
         },
         {
-          onSuccess: () => {
-            router.replace('/(tabs)/home');
-          },
-          onError: (ctx) => {
-            Alert.alert('Login Failed', ctx.error.message || 'Something went wrong');
+          onSuccess: (ctx) => {
+            const authToken = ctx.response.headers.get('set-auth-token');
+            // Store the token securely
+            if (authToken) {
+              SecureStore.setItemAsync('bearer_token', authToken);
+              console.log('Bearer token stored');
+            }
           },
         }
       );
-    } catch (e) {
-      console.error(e);
-      Alert.alert('Error', 'An unexpected error occurred');
+
+      console.log('Better Auth response:', response);
+
+      if (response.error) {
+        Alert.alert('Login Failed', response.error.message || 'Invalid credentials');
+        return;
+      }
+
+      Alert.alert('Success', 'Welcome back!');
+      router.replace('/(tabs)/home');
+    } catch (err: any) {
+      console.error('Full login error:', err);
+      Alert.alert('Error', err.message || 'An unexpected error occurred');
     }
   };
 
+  // Redirect if already logged in
   useEffect(() => {
-    if (session?.user) {
+    if (session?.user && !sessionLoading) {
       router.replace('/(tabs)/home');
     }
-  }, [session, router]);
+  }, [session, sessionLoading, router]);
 
+  // Optional: GitHub login (if enabled in backend)
   const handleGithubLogin = async () => {
     try {
       await authClient.signIn.social({
         provider: 'github',
-        callbackURL: '/dashboard',
+        callbackURL: '/(tabs)/home',
       });
     } catch (e) {
       console.error(e);
-      Alert.alert('Error', 'Social login failed');
+      Alert.alert('Error', 'GitHub login failed');
     }
   };
 
@@ -72,9 +91,9 @@ export default function SignIn() {
     <LoginScreen
       control={control}
       errors={errors}
-      loading={isSubmitting}
+      loading={isSubmitting || sessionLoading}
       onLogin={handleSubmit(handleLogin)}
-      onGoogleLogin={handleGithubLogin}
+      onGoogleLogin={handleGithubLogin} // rename to onGithubLogin if you want
     />
   );
 }

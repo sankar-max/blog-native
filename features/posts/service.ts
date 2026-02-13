@@ -2,7 +2,7 @@ import api from '@/lib/axios-instance';
 import { PostListResponse } from './types';
 
 const endpoints = {
-  GET_POSTS: '/post',
+  GET_POSTS: 'api/post',
 };
 
 class PostService {
@@ -10,7 +10,6 @@ class PostService {
     const response = await api.get<PostListResponse>(endpoints.GET_POSTS, {
       params: { search, page, limit },
     });
-    console.log('🚀 ~ PostService ~ getPosts ~ response.data:', response.data);
     return response.data;
   }
 }
