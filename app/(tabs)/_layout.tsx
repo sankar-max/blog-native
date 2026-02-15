@@ -4,11 +4,17 @@ import { Home, Search, User } from 'lucide-react-native';
 export default function TabLayout() {
   return (
     <Tabs
-      
+      // @ts-ignore: sceneContainerStyle is valid for BottomTabs but missing in Expo Router types
+      sceneContainerStyle={{ backgroundColor: 'transparent' }}
       screenOptions={{
         tabBarActiveTintColor: '#3b82f6',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
+        sceneStyle: { backgroundColor: 'transparent' },
+        // tabBarStyle: {
+        //   backgroundColor: 'var(--background)',
+        //   borderTopColor: 'var(--border)',
+        // },
       }}>
       <Tabs.Screen
         name="home"
@@ -16,7 +22,6 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, size }) => <Home title="home" size={size} color={color} />,
         }}
-        
       />
       <Tabs.Screen
         name="search"

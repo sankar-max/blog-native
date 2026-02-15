@@ -32,8 +32,6 @@ export default function SignIn() {
   } = form;
 
   const handleLogin = async (data: FormData) => {
-    console.log('Login attempt with:', data);
-
     try {
       const response = await authClient.signIn.email(
         {
@@ -46,13 +44,10 @@ export default function SignIn() {
             // Store the token securely
             if (authToken) {
               SecureStore.setItemAsync('bearer_token', authToken);
-              console.log('Bearer token stored');
             }
           },
         }
       );
-
-      console.log('Better Auth response:', response);
 
       if (response.error) {
         Alert.alert('Login Failed', response.error.message || 'Invalid credentials');

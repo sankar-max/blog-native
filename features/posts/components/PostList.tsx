@@ -1,7 +1,7 @@
 import { View, Text, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { PostCard } from './PostCard';
 import { PostListItemsT } from '../types';
-import { AlertCircle } from 'lucide-react-native';
+import { AlertCircle, FileText } from 'lucide-react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 interface PostListProps {
@@ -18,47 +18,54 @@ export const PostList = ({
   posts = [],
   onRefresh,
   isRefetching = false,
-}: PostListProps) => {
-  if (isLoading && !isRefetching) {
-    return (
-      <View className="flex-1 items-center justify-center p-8">
-        <ActivityIndicator size="large" color="#3b82f6" />
-        <Text className="mt-4 font-medium text-gray-500">Fetching content...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <Animated.View entering={FadeIn} className="flex-1 items-center justify-center p-8">
-        <View className="mb-4 rounded-full bg-red-50 p-4">
-          <AlertCircle size={32} color="#ef4444" />
+  ListHeaderComponent,
+}: PostListProps & { ListHeaderComponent?: React.ReactElement }) => {
+  const renderEmptyComponent = () => {
+    if (isLoading && !isRefetching) {
+      return (
+        <View className="flex-1 items-center justify-center p-8">
+          <ActivityIndicator size="small" color="#D97706" />
         </View>
-        <Text className="mb-2 text-lg font-semibold text-gray-900">Could not load posts</Text>
-        <Text className="text-center text-sm text-gray-500">{error.message}</Text>
-      </Animated.View>
-    );
-  }
+      );
+    }
 
-  if (!isLoading && posts.length === 0) {
+    if (error) {
+      return (
+        <Animated.View entering={FadeIn} className="flex-1 items-center justify-center p-8">
+          <View className="bg-destructive/10 mb-4 rounded-full p-4">
+            <AlertCircle size={32} className="text-destructive" />
+          </View>
+          <Text className="text-foreground mb-2 text-lg font-semibold">Failed to load stories</Text>
+          <Text className="text-muted-foreground text-center text-sm">{error.message}</Text>
+        </Animated.View>
+      );
+    }
+
     return (
-      <Animated.View entering={FadeIn} className="flex-1 items-center justify-center p-8 pt-32">
-        <Text className="text-xl font-medium text-gray-500">No stories found.</Text>
-        <Text className="mt-2 text-sm text-gray-400">Try checking back later.</Text>
+      <Animated.View entering={FadeIn} className="flex-1 items-center justify-center p-8 pt-20">
+        <View className="bg-muted mb-4 rounded-full p-6">
+          <FileText size={40} className="text-muted-foreground" strokeWidth={1.5} />
+        </View>
+        <Text className="text-foreground text-xl font-semibold">No stories found</Text>
+        <Text className="text-muted-foreground mt-2 text-center text-sm leading-relaxed">
+          We couldn&apos;t find any articles matching your search.{'\n'}Try adjusting your keywords.
+        </Text>
       </Animated.View>
     );
-  }
+  };
 
   return (
     <FlatList
       data={posts}
       keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item, index }) => <PostCard post={item} index={index} />}
-      contentContainerClassName="p-6 pb-24"
-      showsVerticalScrollIndicator={false}
+      renderItem={({ item, index }) => <PostCard key={item.id} post={item} index={index} />}
+      contentContainerClassName="px-5 pb-24 pt-4 flex-grow-1"
       refreshControl={
-        <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} tintColor="#3b82f6" />
+        <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} tintColor="#000000" />
       }
+      ListHeaderComponent={ListHeaderComponent}
+      ListEmptyComponent={renderEmptyComponent}
+      ItemSeparatorComponent={() => <View className="h-0" />}
     />
   );
 };

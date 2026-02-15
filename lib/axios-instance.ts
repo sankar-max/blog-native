@@ -6,7 +6,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  const token = await SecureStore.getItemAsync('auth_token');
+  const token = await SecureStore.getItemAsync('bearer_token');
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -14,8 +15,8 @@ api.interceptors.request.use(async (config) => {
 });
 
 api.interceptors.response.use(
-  res => res.data,
-  err => {
+  (res) => res.data,
+  (err) => {
     if (err.response?.status === 401) {
       SecureStore.deleteItemAsync('auth_token');
       // Redirect to login (use global event or context)

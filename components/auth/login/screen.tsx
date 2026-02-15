@@ -109,6 +109,7 @@ function LoginScreen({ control, errors, loading, onLogin, onGoogleLogin }: Login
             </View>
 
             <Pressable
+              key={loading ? 'active' : 'not'}
               onPress={onLogin}
               disabled={loading}
               className={`mt-10 items-center justify-center rounded-full py-4 ${
