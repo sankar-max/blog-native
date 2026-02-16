@@ -59,13 +59,12 @@ export const PostList = ({
       data={posts}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item, index }) => <PostCard key={item.id} post={item} index={index} />}
-      contentContainerClassName="px-5 pb-24 pt-4 flex-grow-1"
+      contentContainerClassName="px-5 pb-10 pt-0 flex-grow-1"
       refreshControl={
         <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} tintColor="#000000" />
       }
       ListHeaderComponent={ListHeaderComponent}
       ListEmptyComponent={renderEmptyComponent}
-      ItemSeparatorComponent={() => <View className="h-0" />}
     />
   );
 };

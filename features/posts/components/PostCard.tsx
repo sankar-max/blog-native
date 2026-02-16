@@ -104,7 +104,7 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
                 {/* CTA */}
                 <View className="flex-row items-center gap-1">
                   <Text className="text-primary text-xs font-bold">Read Story</Text>
-                  <ArrowRight size={14} className="text-primary" />
+                  <ArrowRight size={14} color={'white'} />
                 </View>
               </View>
             </View>
