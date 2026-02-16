@@ -6,8 +6,8 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  useColorScheme,
 } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import { usePost } from '@/features/posts/hooks/usePost';
 import { format } from 'date-fns';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,7 +19,7 @@ export default function PostDetails() {
   const { id } = useLocalSearchParams();
   const { post, isLoading, error } = usePost(Number(id));
   const { width } = useWindowDimensions();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
 
   const { mutate: toggleLikePost, isPending } = useToggleLikePost();
@@ -101,16 +101,6 @@ export default function PostDetails() {
 
   return (
     <View className="bg-background flex-1">
-      <Stack.Screen
-      // options={{
-      //   headerShown: true,
-      //   title: '',
-      //   headerBackTitle: 'Back',
-      //   headerTransparent: true,
-      //   headerTintColor: '#000',
-      // }}
-      />
-
       <SafeAreaView className="flex-1" edges={['bottom', 'left', 'right']}>
         <ScrollView
           className="px-6 pt-6"

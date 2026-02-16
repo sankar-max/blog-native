@@ -1,7 +1,7 @@
 import { TextInput, View, TouchableOpacity, Text } from 'react-native';
 import { usePosts } from '@/features/posts/hooks/usePosts';
 import { PostList } from '@/features/posts/components/PostList';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { Search, X } from 'lucide-react-native';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -13,6 +13,7 @@ type SearchParams = {
 };
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
   const [search, setSearch] = useState<SearchParams>({
     search: '',
     page: 1,
@@ -41,7 +42,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1" edges={['top']}>
+    <View className="flex-1" style={{ paddingLeft: insets.left, paddingRight: insets.right }}>
       <PostList
         posts={data?.posts}
         isLoading={isLoading}
@@ -49,7 +50,7 @@ export default function HomeScreen() {
         onRefresh={refetch}
         isRefetching={isRefetching}
         ListHeaderComponent={
-          <View className="pt-2 pb-4">
+          <View className="pt-5 pb-4">
             <View className="mb-4 flex-row items-center justify-between">
               <View>
                 <Text className="text-foreground text-3xl font-bold tracking-tight">Discover</Text>
@@ -89,6 +90,6 @@ export default function HomeScreen() {
           </View>
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
