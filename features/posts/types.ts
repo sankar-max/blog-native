@@ -26,3 +26,15 @@ export type PostListItemsT = {
   totalComments: number;
   isLiked: boolean;
 };
+
+export type User = {
+  id: string;
+  name: string;
+  image: string | null;
+  email: string;
+};
+export type PostLikesResponse = {
+  users: User[];
+  total: number;
+  totalPages: number;
+};

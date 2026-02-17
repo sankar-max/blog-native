@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { Search, X } from 'lucide-react-native';
 import { useDebounce } from '@/hooks/useDebounce';
-
 type SearchParams = {
   search: string;
   page: number;

@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { Link } from 'expo-router';
 import { ArrowRight, Heart, MessageCircle } from 'lucide-react-native';
-import { Image, Pressable, Text, View } from 'react-native';
+import { Image, Pressable, Text, View, TouchableOpacity } from 'react-native';
 import Animated, {
   FadeInDown,
   useAnimatedStyle,
@@ -10,12 +10,16 @@ import Animated, {
 } from 'react-native-reanimated';
 import { PostListItemsT } from '../types';
 import { useToggleLikePost } from '../hooks/usePostLike';
+import { useRef, useCallback } from 'react';
+import LikeView, { LikeViewRef } from './bottomSheet/LikeView';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const PostCard = ({ post, index }: { post: PostListItemsT; index: number }) => {
   const scale = useSharedValue(1);
-  const { mutate: toggleLikePost, isPending } = useToggleLikePost();
+  const actionSheetRef = useRef<LikeViewRef>(null);
+  const { isPending } = useToggleLikePost();
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
@@ -27,6 +31,10 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
   const onPressOut = () => {
     scale.value = withSpring(1);
   };
+
+  const handlePresentModalPress = useCallback(() => {
+    actionSheetRef.current?.present();
+  }, []);
 
   return (
     <Animated.View entering={FadeInDown.delay(index * 100).springify()}>
@@ -68,22 +76,23 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
                 {post.excerpt}
               </Text>
 
-              {/* Footer: Stats & Action */}
               <View className="mt-auto flex-row items-center justify-between">
                 <View className="flex-row items-center gap-4">
                   {/* Likes */}
                   <View className="flex-row items-center gap-1.5">
-                    <Heart
+                    <TouchableOpacity
                       onPress={(e) => {
                         e.stopPropagation();
-                        toggleLikePost(post.id);
+                        handlePresentModalPress();
                       }}
                       disabled={isPending}
-                      size={16}
-                      color={post.isLiked ? '#EF4444' : '#9CA3AF'}
-                      fill={post.isLiked ? '#EF4444' : 'transparent'}
-                      className={post.isLiked ? 'text-destructive' : 'text-muted-foreground'}
-                    />
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                      <Heart
+                        size={16}
+                        color={post.isLiked ? '#EF4444' : '#9CA3AF'}
+                        fill={post.isLiked ? '#EF4444' : 'transparent'}
+                      />
+                    </TouchableOpacity>
                     <Text
                       className={`text-xs font-medium ${
                         post.isLiked ? 'text-destructive' : 'text-muted-foreground'
@@ -111,6 +120,9 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
           </AnimatedPressable>
         </Link>
       </View>
+
+      {/* Post Action Sheet */}
+      <LikeView ref={actionSheetRef} post={post} />
     </Animated.View>
   );
 };
