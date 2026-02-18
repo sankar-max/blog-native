@@ -6,4 +6,7 @@ export const POST_API_CONSTANTS = {
   DELETE_POST: (id: number) => `/post/${id}`,
   LIKE_POST: "/post/like",
   VIEW_POST_LIKES: (id: number) => `/post/${id}/like`,
+  VIEW_POST_COMMENTS: (id: number) => `/post/${id}/comment`,
+  CREATE_COMMENT: (id: number) => `/post/${id}/comment`,
+
 }

@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { postService } from '../../service';
 import SWR_KEYS from './use-swr-keys';
 
-export const usePostLikes = (id: number) => {
+export const usePostLikes = (postId: number) => {
   const { data, error, isLoading } = useQuery({
-    queryKey: SWR_KEYS.POST_LIKES(id),
-    queryFn: () => postService.viewPostLikes(id),
+    queryKey: SWR_KEYS.POST_LIKES(postId),
+    queryFn: () => postService.viewPostLikes(postId),
   });
 
   return {

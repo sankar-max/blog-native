@@ -1,4 +1,4 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { BottomSheet, BottomSheetRef } from '@/components/ui/BottomSheet';
 import { PostListItemsT, User } from '../../types';
@@ -25,42 +25,51 @@ const LikeView = forwardRef<LikeViewRef, LikeViewProps>(({ post }, ref) => {
   }));
 
   const renderHeader = () => (
-    <View className="mb-4 pt-2">
-      <Text className="text-foreground mb-6 text-center text-lg font-bold">Post Actions</Text>
-      <View className="flex-row items-center justify-between px-4">
-        <Text className="text-foreground font-semibold">Likes</Text>
-        <View className="bg-secondary rounded-full px-3 py-1">
-          <Text className="text-secondary-foreground text-xs font-bold">
-            {postLikes?.total ?? 0}
-          </Text>
+    <View className="mb-2 px-6 pt-4">
+      <View className="flex-row items-center justify-between">
+        <Text className="text-foreground text-xl font-bold tracking-tight">Likes</Text>
+        <View className="bg-primary/10 rounded-full px-3 py-1">
+          <Text className="text-primary text-xs font-bold">{postLikes?.total ?? 0}</Text>
         </View>
       </View>
+      <View className="bg-border/50 mt-4 h-px w-full" />
     </View>
   );
 
   return (
-    <BottomSheet ref={bottomSheetRef} snapPoints={['40%', '80%']}>
+    <BottomSheet ref={bottomSheetRef} snapPoints={['50%', '90%']}>
       {isLoading ? (
         <View className="flex-1 items-center justify-center p-10">
-          <Text className="text-muted-foreground">Loading...</Text>
+          <Text className="text-muted-foreground animate-pulse text-sm font-medium">
+            Loading likes...
+          </Text>
         </View>
       ) : (
         <BottomSheetFlashList
-          data={postLikes?.users}
+          data={postLikes?.users ?? []}
           keyExtractor={(item: User) => item.id}
-          estimatedItemSize={64}
+          estimatedItemSize={72}
           ListHeaderComponent={renderHeader}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          renderItem={({ item }) => (
-            <View className="border-border/5 flex-row items-center justify-between border-b px-4 py-3">
-              <View className="flex-row items-center gap-3">
-                <View className="bg-muted h-10 w-10 items-center justify-center rounded-full">
-                  <Text className="text-muted-foreground font-bold">{item.name[0]}</Text>
+          contentContainerStyle={{ paddingBottom: 40 }}
+          renderItem={({ item }: { item: User }) => (
+            <View className="active:bg-muted/30 flex-row items-center justify-between px-6 py-4">
+              <View className="flex-row items-center gap-4">
+                <View className="bg-muted h-12 w-12 items-center justify-center overflow-hidden rounded-full shadow-sm">
+                  {item.image ? (
+                    <Image source={{ uri: item.image }} className="h-full w-full" />
+                  ) : (
+                    <Text className="text-muted-foreground text-base font-bold">
+                      {item.name[0].toUpperCase()}
+                    </Text>
+                  )}
                 </View>
-                <View>
-                  <Text className="text-foreground font-medium">{item.name}</Text>
-                  <Text className="text-muted-foreground text-xs">{item.email}</Text>
+                <View className="gap-0.5">
+                  <Text className="text-foreground text-base font-semibold">{item.name}</Text>
+                  <Text className="text-muted-foreground text-sm">{item.email}</Text>
                 </View>
+              </View>
+              <View className="bg-border/10 h-8 w-8 items-center justify-center rounded-full">
+                <Text className="text-muted-foreground">›</Text>
               </View>
             </View>
           )}

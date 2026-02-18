@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { Link } from 'expo-router';
 import { ArrowRight, Heart, MessageCircle } from 'lucide-react-native';
-import { Image, Pressable, Text, View, TouchableOpacity } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 import Animated, {
   FadeInDown,
   useAnimatedStyle,
@@ -9,16 +9,19 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { PostListItemsT } from '../types';
-import { useToggleLikePost } from '../hooks/usePostLike';
+import { useToggleLikePost } from '../hooks/usePostLikeToggle';
 import { useRef, useCallback } from 'react';
 import LikeView, { LikeViewRef } from './bottomSheet/LikeView';
+import PressableBtn from '@/components/ui/PressableBtn';
+import PostCommentsList, { PostCommentsListRef } from './bottomSheet/comments';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const PostCard = ({ post, index }: { post: PostListItemsT; index: number }) => {
   const scale = useSharedValue(1);
   const actionSheetRef = useRef<LikeViewRef>(null);
-  const { isPending } = useToggleLikePost();
+  const commentsRef = useRef<PostCommentsListRef>(null);
+  const { isPending, toggleLike } = useToggleLikePost();
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -32,9 +35,17 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
     scale.value = withSpring(1);
   };
 
-  const handlePresentModalPress = useCallback(() => {
+  const handlePresentLikesModalPress = useCallback(() => {
     actionSheetRef.current?.present();
   }, []);
+
+  const handlePresentCommentsModalPress = useCallback(() => {
+    commentsRef.current?.present();
+  }, []);
+
+  const togglePostLike = () => {
+    toggleLike(post.id);
+  };
 
   return (
     <Animated.View entering={FadeInDown.delay(index * 100).springify()}>
@@ -80,10 +91,10 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
                 <View className="flex-row items-center gap-4">
                   {/* Likes */}
                   <View className="flex-row items-center gap-1.5">
-                    <TouchableOpacity
+                    <PressableBtn
                       onPress={(e) => {
                         e.stopPropagation();
-                        handlePresentModalPress();
+                        togglePostLike();
                       }}
                       disabled={isPending}
                       hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
@@ -92,21 +103,36 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
                         color={post.isLiked ? '#EF4444' : '#9CA3AF'}
                         fill={post.isLiked ? '#EF4444' : 'transparent'}
                       />
-                    </TouchableOpacity>
-                    <Text
-                      className={`text-xs font-medium ${
-                        post.isLiked ? 'text-destructive' : 'text-muted-foreground'
-                      }`}>
-                      {post.totalLikes}
-                    </Text>
+                    </PressableBtn>
+                    <PressableBtn
+                      hitSlop={8}
+                      accessibilityLabel={`Total likes ${post.totalLikes}`}
+                      accessibilityHint={`Tap to view all likes`}
+                      accessibilityRole="button">
+                      <Text
+                        onPress={handlePresentLikesModalPress}
+                        className={`text-xs font-medium hover:bg-white ${
+                          post.isLiked ? 'text-destructive' : 'text-muted-foreground'
+                        }`}>
+                        {post.totalLikes}
+                      </Text>
+                    </PressableBtn>
                   </View>
 
                   {/* Comments */}
                   <View className="flex-row items-center gap-1.5">
                     <MessageCircle size={16} className="text-muted-foreground" />
-                    <Text className="text-muted-foreground text-xs font-medium">
-                      {post.totalComments}
-                    </Text>
+                    <PressableBtn
+                      hitSlop={8}
+                      accessibilityLabel={`Total comments ${post.totalComments}`}
+                      accessibilityHint={`Tap to view all comments`}
+                      accessibilityRole="button">
+                      <Text
+                        onPress={handlePresentCommentsModalPress}
+                        className="text-muted-foreground text-xs font-medium">
+                        {post.totalComments}
+                      </Text>
+                    </PressableBtn>
                   </View>
                 </View>
 
@@ -123,6 +149,7 @@ export const PostCard = ({ post, index }: { post: PostListItemsT; index: number 
 
       {/* Post Action Sheet */}
       <LikeView ref={actionSheetRef} post={post} />
+      <PostCommentsList ref={commentsRef} post={post} />
     </Animated.View>
   );
 };

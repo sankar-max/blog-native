@@ -38,3 +38,17 @@ export type PostLikesResponse = {
   total: number;
   totalPages: number;
 };
+export type PostCommentsResponse = {
+  comments: Comments[];
+  total: number;
+  totalPages: number;
+};
+
+
+export type Comments = {
+  id: number;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  author: User;
+}

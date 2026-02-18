@@ -9,8 +9,8 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <BottomSheetModalProvider>
-        <QueryProvider>
+      <QueryProvider>
+        <BottomSheetModalProvider>
           <SafeAreaProvider>
             <View className="bg-background flex-1">
               <Stack
@@ -27,8 +27,8 @@ export default function RootLayout() {
               </Stack>
             </View>
           </SafeAreaProvider>
-        </QueryProvider>
-      </BottomSheetModalProvider>
+        </BottomSheetModalProvider>
+      </QueryProvider>
     </GestureHandlerRootView>
   );
 }
