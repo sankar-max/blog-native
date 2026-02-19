@@ -12,7 +12,7 @@ import { usePost } from '@/features/posts/hooks/usePost';
 import { format } from 'date-fns';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Heart, MessageCircle } from 'lucide-react-native';
-import { useToggleLikePost } from '@/features/posts/hooks/usePostLike';
+import { useToggleLikePost } from '@/features/posts/hooks/usePostLikeToggle';
 import RenderHtml from 'react-native-render-html';
 
 export default function PostDetails() {
