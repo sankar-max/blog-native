@@ -1,5 +1,5 @@
 import { postService } from '../../service';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, } from '@tanstack/react-query';
 import SWR_KEYS from './use-swr-keys';
 export const usePosts = ({
   search,
@@ -10,8 +10,12 @@ export const usePosts = ({
   page?: number;
   limit?: number;
 }) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [...SWR_KEYS.POSTS, search, page, limit],
-    queryFn: () => postService.getPosts({ search, page, limit }),
+    queryFn: ({ pageParam }) => postService.getPosts({ search, cursor: pageParam, limit }),
+    initialPageParam: undefined as number | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    refetchOnMount: "always",
   });
 };
+

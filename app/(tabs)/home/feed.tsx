@@ -21,7 +21,16 @@ export default function HomeScreen() {
 
   const debouncedSearch = useDebounce(search.search, 500);
 
-  const { data, isLoading, error, refetch, isRefetching } = usePosts({
+  const {
+    data,
+    isLoading,
+    error,
+    refetch,
+    isRefetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = usePosts({
     ...search,
     search: debouncedSearch,
   });
@@ -40,14 +49,18 @@ export default function HomeScreen() {
     }));
   };
 
+  const allPosts = data?.pages.flatMap((page) => page.posts) || [];
   return (
     <View className="flex-1" style={{ paddingLeft: insets.left, paddingRight: insets.right }}>
       <PostList
-        posts={data?.posts}
+        posts={allPosts}
         isLoading={isLoading}
         error={error}
         onRefresh={refetch}
         isRefetching={isRefetching}
+        onLoadMore={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isLoadingMore={isFetchingNextPage}
         ListHeaderComponent={
           <View className="pt-5 pb-4">
             <View className="mb-4 flex-row items-center justify-between">

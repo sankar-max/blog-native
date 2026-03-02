@@ -3,9 +3,16 @@ import { PostListResponse, PostListItemsT, PostLikesResponse, PostCommentsRespon
 import { POST_API_CONSTANTS } from './endpoints';
 
 class PostService {
-  async getPosts({ search, page, limit }: { search?: string; page?: number; limit?: number }) {
+  async getPosts(params?: {
+    search?: string
+    cursor?: number
+    limit?: number
+    authorId?: string
+    published?: boolean
+  },) {
+    const { search, cursor, limit, authorId, published } = params || {};
     const response = await api.get<PostListResponse>(POST_API_CONSTANTS.GET_POSTS, {
-      params: { search, page, limit },
+      params: { search, cursor, limit, authorId, published },
     });
 
     return response.data;

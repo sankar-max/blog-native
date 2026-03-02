@@ -1,9 +1,9 @@
 export type PostListResponse = {
   posts: PostListItemsT[];
   total: number;
-  page: number;
   limit: number;
-  totalPages: number;
+  nextCursor?: number | null
+
 };
 
 export type PostListItemsT = {
@@ -25,6 +25,8 @@ export type PostListItemsT = {
   totalLikes: number;
   totalComments: number;
   isLiked: boolean;
+  isFollowing: boolean
+
 };
 
 export type User = {

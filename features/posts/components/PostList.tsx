@@ -10,6 +10,9 @@ interface PostListProps {
   posts?: PostListItemsT[];
   onRefresh?: () => void;
   isRefetching?: boolean;
+  onLoadMore?: () => void;
+  hasNextPage?: boolean;
+  isLoadingMore?: boolean;
 }
 
 export const PostList = ({
@@ -18,6 +21,9 @@ export const PostList = ({
   posts = [],
   onRefresh,
   isRefetching = false,
+  onLoadMore,
+  hasNextPage,
+  isLoadingMore,
   ListHeaderComponent,
 }: PostListProps & { ListHeaderComponent?: React.ReactElement }) => {
   const renderEmptyComponent = () => {
@@ -54,6 +60,15 @@ export const PostList = ({
     );
   };
 
+  const renderFooter = () => {
+    if (!isLoadingMore) return null;
+    return (
+      <View className="items-center justify-center py-6">
+        <ActivityIndicator size="small" color="#D97706" />
+      </View>
+    );
+  };
+
   return (
     <FlatList
       data={posts}
@@ -65,6 +80,13 @@ export const PostList = ({
       }
       ListHeaderComponent={ListHeaderComponent}
       ListEmptyComponent={renderEmptyComponent}
+      ListFooterComponent={renderFooter}
+      onEndReached={() => {
+        if (hasNextPage && !isLoadingMore && !isLoading) {
+          onLoadMore?.();
+        }
+      }}
+      onEndReachedThreshold={0.5}
     />
   );
 };
