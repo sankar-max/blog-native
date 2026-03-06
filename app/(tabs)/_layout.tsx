@@ -1,40 +1,56 @@
-import { Tabs } from 'expo-router';
-import { Home, Search, User } from 'lucide-react-native';
+import { Tabs } from "expo-router";
+import { Home, Search, User, Pencil } from "lucide-react-native";
 
 export default function TabLayout() {
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: '#3b82f6',
-        tabBarInactiveTintColor: 'gray',
-        headerShown: false,
-        sceneStyle: { backgroundColor: 'transparent' },
-        tabBarStyle: {
-          backgroundColor: 'var(--background)',
-          borderTopColor: 'var(--border)',
-        },
-      }}>
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => <Home title="home" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="search"
-        options={{
-          title: 'Search',
-          tabBarIcon: ({ color, size }) => <Search title="search" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => <User title="person" size={size} color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+	return (
+		<Tabs
+			screenOptions={{
+				tabBarActiveTintColor: "#3b82f6",
+				tabBarInactiveTintColor: "gray",
+				headerShown: false,
+				sceneStyle: { backgroundColor: "transparent" },
+				tabBarStyle: {
+					backgroundColor: "var(--background)",
+					borderTopColor: "var(--border)",
+				},
+			}}
+		>
+			<Tabs.Screen
+				name="home"
+				options={{
+					title: "Home",
+					tabBarIcon: ({ color, size }) => (
+						<Home title="home" size={size} color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="search"
+				options={{
+					title: "Search",
+					tabBarIcon: ({ color, size }) => (
+						<Search title="search" size={size} color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="write"
+				options={{
+					title: "Write",
+					tabBarIcon: ({ color, size }) => (
+						<Pencil title="write" size={size} color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="profile"
+				options={{
+					title: "Profile",
+					tabBarIcon: ({ color, size }) => (
+						<User title="person" size={size} color={color} />
+					),
+				}}
+			/>
+		</Tabs>
+	);
 }
